@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- jqeuy默认的css样式 -->
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+
+    <!-- 这是jquery的核心包  -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <!-- 这是easyui的核心包  -->
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/util-js.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+<div class="easyui-dialog" data-options="width:350,height:200,title:'登录',iconCls:'icon-tip',buttons:'#bt'">
+    <form id="loginForm" method="post">
+        <table>
+            <tr>
+                <td>用户名</td>
+                <td>
+                    <input class="easyui-textbox" name="userName" data-options="iconCls:'icon-man',required:true">
+                </td>
+            </tr>
+            <tr>
+                <td>密码</td>
+                <td>
+                    <input class="easyui-passwordbox" name="passWord" data-options="required:true">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="bt">
+    <a class="easyui-linkbutton" href="javascript:login()" data-options="iconCls:'icon-ok'">登录</a>
+</div>
+</body>
+
+<script type="text/javascript">
+
+    //登录
+    function login() {
+
+        $("#loginForm").form("submit", {
+            url: "../login",
+            success: function (data) {
+                $.messager.alert("提示", data, "info");
+                if (data == "登录成功！") {
+                    location.href = "../toindex"
+                }
+            }
+        })
+    }
+
+
+</script>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.CarMapper" >
+  <insert id="addcar" parameterType="com.jk.model.Car">
+    <selectKey resultType="java.lang.Integer" keyProperty="cid" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+   insert into t_car (cname,counts,cartime)  values (#{cname},#{counts},#{cartime})
+  </insert>
+
+  <delete id="del" parameterType="java.lang.String">
+    delete from  t_car where cid=#{id}
+  </delete>
+</mapper>

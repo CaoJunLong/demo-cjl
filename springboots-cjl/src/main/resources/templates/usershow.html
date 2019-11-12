@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- jqeuy默认的css样式 -->
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+
+    <!-- 这是jquery的核心包  -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <!-- 这是easyui的核心包  -->
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/util-js.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+<div id="tool">
+    <a href="javascript:openAdd()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+</div>
+
+
+<div id="UserDialog" class="easyui-dialog" data-options="closed:true,width:500,height:350,buttons:'#bt'">
+    <form id="addForm" method="post">
+        <input name="userId" style="display:none">
+        名字:<input class="easyui-textbox" name="userName"><br>
+        密码:<input class="easyui-textbox" name="passWord">
+    </form>
+</div>
+
+<div id="bt">
+    <a href="javascript:Add()" class="easyui-linkbutton">保存</a>
+    <a href="javascript:close()" class="easyui-linkbutton">取消</a>
+</div>
+
+
+<!-- 设置角色弹框 -->
+
+<div id="roleDialog"></div>
+
+<table id="usertable"></table>
+</body>
+<script>
+    $(function () {
+        initusertable();
+    })
+
+    function initusertable() {
+        $("#usertable").datagrid({
+
+            url: "../queryUserList",
+            columns: [
+                [
+                    {title: 'Id', field: 'userId'},
+                    {title: '名字', field: 'userName'},
+                    {
+                        title: '   操作      ', field: '    ', formatter: function (value, row, index) {
+                            var str = "<input type='button' onclick='del(" + row.userId + ")' value='删除'> '<input type='button' onclick='updatebyid(" + row.userId + ")' value='修改'>' '<input type='button' onclick='queryrole(" + row.userId + ",\"" + row.userName + "\")' value='设置角色'>'"
+                            return str;
+
+                        }
+
+                    },
+
+                ]
+            ],
+            fit: true,
+            toolbar: "#tool",
+        })
+    }
+
+    //删除
+    function del(id) {
+        $.ajax({
+            url: "../del",
+            data: {id: id},
+            success: function () {
+                initusertable();
+            }
+        })
+
+    }
+
+    //新增
+    function openAdd() {
+
+        $("#addForm").form("reset");
+        $("#UserDialog").dialog({
+            closed: false,
+            title: "新增用户"
+        })
+
+    }
+
+    function close() {
+        $("#UserDialog").dialog("close");
+    }
+
+    function Add() {
+        $("#addForm").form("submit", {
+            url: "../adduser",
+            success: function () {
+
+                close();
+
+                initusertable();
+            }
+        })
+    }
+
+    //修改
+    function updatebyid(id) {
+        $.ajax({
+            url: "../updatebyid",
+            type: "post",
+            data: {id: id},
+            success: function (data) {
+                $("#addForm").form("load", data);
+                //打开弹框
+                $("#UserDialog").dialog({
+                    closed: false,
+                    title: '修改用户'
+                });
+            }
+        })
+
+    }
+
+    //角色弹框
+    function queryrole(userId, userName) {
+
+        $("#roleDialog").dialog({
+            closed: false,
+            title: "设置" + userName + "角色"
+        })
+
+    }
+
+    //设置角色
+    function queryrole(uid, userName) {
+        $('#roleDialog').dialog({
+            title: '设置' + userName + 'de角色',
+            width: 400,
+            height: 200,
+            closed: false,
+            href: '../toEditUserRole?uid=' + uid,
+            modal: true,
+            buttons: [
+                {
+                    text: '保存',
+                    handler: function () {
+                        var rolearr = $("[name='rids']:checked");
+                        var rids = "";
+                        for (var i = 0; i < rolearr.length; i++) {
+                            rids += "," + rolearr[i].value;
+                        }
+                        rids = rids.substring(1);
+                        alert(rids);
+                        $.ajax({
+                            type: "post",
+                            url: "../saveUserRole",
+                            data: {uid: uid, rids: rids},
+                            success: function (msg) {
+                                if (msg == '操作成功') {
+                                    $('#roleDialog').dialog("close")
+                                    $.messager.show({
+                                        title: '新消息',
+                                        msg: '操作成功',
+                                        timeout: 2000,
+                                        showType: 'slide'
+                                    });
+
+                                }
+                            }
+                        })
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#roleDialog').dialog("close")
+                    }
+                }
+            ]
+        });
+    }
+
+</script>
+</html>

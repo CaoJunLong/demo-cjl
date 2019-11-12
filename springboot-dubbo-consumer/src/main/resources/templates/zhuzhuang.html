@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- 这是jquery的核心包  -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../highcharts/code/highcharts.js"></script>
+    <script src="../highcharts/code/modules/exporting.js"></script>
+    <script src="../highcharts/code/modules/export-data.js"></script>
+</head>
+<body>
+<div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div><br>
+</body>
+<script>
+    $(function(){
+
+        $.ajax({
+            url:"../queryzhuzhuang",
+            type:"post",
+            dataType:"json",
+            async:true,
+            success:function (data) {
+                var xtext = [];//X轴TEXT
+                var nums = [];//y轴数量
+                for (var i = 0; i < data.length; i++) {
+
+                    nums.push(data[i].counts);
+                    xtext.push(data[i].time);
+                }
+                alert(xtext);
+                var chart = Highcharts.chart('container', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: '车辆销售信息'
+                    },
+                    subtitle: {
+                        text: '数据来源:1905'
+                    },
+                    xAxis: {
+                        categories: xtext,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '销售量'
+                        }
+                    },
+                    tooltip: {
+                        // head + 每个 point + footer 拼接成完整的 table
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            borderWidth: 0
+                        }
+                    },
+                    series: [{
+
+                        data: nums,
+                    }]
+                })
+            }
+        })
+
+    })
+
+</script>
+</html>

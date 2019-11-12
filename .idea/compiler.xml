@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="springboot-dubbo-consumer" />
+        <module name="springboot-dubbo-provider" />
+        <module name="springboot-provider" />
+        <module name="springboots-cjl" />
+        <module name="springboot-solr" />
+        <module name="springboot-consumer" />
+        <module name="duboo-api" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="springboot-cjl" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="springboot-cjl" options="-parameters" />
+      <module name="springboot-consumer" options="-parameters" />
+      <module name="springboot-dubbo-consumer" options="-parameters" />
+      <module name="springboot-dubbo-provider" options="-parameters" />
+      <module name="springboot-provider" options="-parameters" />
+      <module name="springboot-solr" options="-parameters" />
+      <module name="springboots-cjl" options="-parameters" />
+    </option>
+  </component>
+</project>

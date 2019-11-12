@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- jqeuy默认的css样式 -->
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+
+    <!-- 这是jquery的核心包  -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <!-- 这是easyui的核心包  -->
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/util-js.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+<div id="tool">
+    <a href="javascript:openAdd()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+</div>
+<table id="treetable"></table>
+
+<div id="MenuDialog" class="easyui-dialog" data-options="closed:true,width:500,height:350,buttons:'#bt'">
+    <form id="addForm" method="post">
+        <input name="id" style="display:none">
+        权限名称:<input class="easyui-textbox" name="text"><br>
+        路径:<input class="easyui-textbox" name="url"><br>
+        上级权限名称:<input class="easyui-combotree" name="pid" data-options="valueField:'id',textField:'text',
+	url:'../queryTree',width:110,panelHeight:110">
+    </form>
+</div>
+
+<div id="bt">
+    <a href="javascript:Add()" class="easyui-linkbutton">保存</a>
+    <a href="javascript:close()" class="easyui-linkbutton">取消</a>
+</div>
+</body>
+<script type="text/javascript">
+    $(function () {
+        initmenutable();
+    })
+
+    function initmenutable() {
+        $("#treetable").datagrid({
+
+            url: "../queryMenuList",
+            columns: [
+                [
+                    {title: 'Id', field: 'id'},
+                    {title: '名字', field: 'text'},
+                    {title: '路径', field: 'url'},
+                    {title: '上级名称', field: 'texts'},
+                    {
+                        title: '操作', field: '  ', formatter: function (value, row, index) {
+                            var str = "<input type='button' onclick='delmenu(" + row.id + ")' value='删除'> '<input type='button' onclick='updatemenubyid(" + row.id + ")' value='修改'>'"
+                            return str;
+
+                        }
+
+                    },
+
+                ]
+            ],
+            fit: true,
+            toolbar: "#tool",
+        })
+    }
+
+    //打开弹框
+    function openAdd() {
+
+        $("#addForm").form("reset");
+        $("#MenuDialog").dialog({
+            closed: false,
+            title: "新增用户"
+        })
+
+    }
+
+    //关闭弹框
+    function close() {
+        $("#MenuDialog").dialog("close");
+    }
+
+    //新增
+    function Add() {
+        $("#addForm").form("submit", {
+            url: "../addmenu",
+            success: function () {
+
+                close();
+
+                initmenutable();
+            }
+        })
+    }
+
+    /* 删除 */
+    function delmenu(id) {
+        $.ajax({
+            url: "../delmenu",
+            data: {id: id},
+            success: function () {
+                initmenutable();
+            }
+        })
+
+    }
+
+    //修改
+    function updatemenubyid(id) {
+        $.ajax({
+            url: "../updatemenubyid",
+            type: "post",
+            data: {id: id},
+            success: function (data) {
+                $("#addForm").form("load", data);
+                //打开弹框
+                $("#MenuDialog").dialog({
+                    closed: false,
+                    title: '修改用户'
+                });
+            }
+        })
+
+    }
+
+
+</script>
+</html>

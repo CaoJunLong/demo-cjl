@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+
+    <!-- jqeuy默认的css样式 -->
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/default/easyui.css">
+
+    <link rel="stylesheet" type="text/css" href="../js/easyui/themes/icon.css">
+
+    <!-- 这是jquery的核心包  -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <!-- 这是easyui的核心包  -->
+    <script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../js/util-js.js"></script>
+    <script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js"></script>
+
+</head>
+
+<body>
+<div id="tool">
+    <a href="javascript:openAdd()" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">新增</a>
+</div>
+
+<div id="StudentDialog" class="easyui-dialog" data-options="closed:true,width:500,height:350,buttons:'#bt'">
+    <form id="addForm" method="post">
+        <input name="sid" style="display:none">
+        名字:<input class="easyui-textbox" name="studentName"><br>
+        性别:<input type="radio" value="1" name="sex">男
+        <input type="radio" value="2" name="sex">女
+    </form>
+</div>
+
+<div id="bt">
+    <a href="javascript:Add()" class="easyui-linkbutton" >保存</a>
+    <a href="javascript:close()" class="easyui-linkbutton" >取消</a>
+</div>
+
+
+    <table id="student"></table>
+</body>
+<script>
+    $(function(){
+        initstudenttable();
+    })
+
+    function initstudenttable(){
+        $("#student").datagrid({
+            url:'../queryStudentList',
+            fitColumns:true,
+            striped:true,
+            ctrlSelect:true,
+            method:"post",
+            loadMsg:"数据库加载中。。。",
+            pagination:true,
+            pagePosition:"bottom",
+            pageNumber:1,//当前页数
+            pageSize:2,//每页条数
+            pageList:[2,4,6,8],
+            columns:[
+                [
+                {field:'sid',title:'编号',width:100},
+                {field:'studentName',title:'姓名',width:100},
+                {field:'sex',title:'性别',width:100,formatter:function(value,row,index){
+                    str="";
+                    if(row.sex==1){
+                        str="男";
+                    }
+                        if(row.sex==2){
+                            str="女";
+                        }
+                    return str;
+                    }
+
+                    },
+                    {
+                        title: '   操作      ', field: '    ', formatter: function (value, row, index) {
+                            var str = "<input type='button' onclick='del(" + row.sid + ")' value='删除'> '<input type='button' onclick='updatebyid(" + row.sid + ")' value='修改'>' "
+                            return str;
+
+                        }
+                    }
+
+
+            ]
+            ]
+
+        });
+
+    }
+
+    function del(id){
+        $.ajax({
+            url:"/del",
+            data:{id:id},
+            success:function(){
+                initstudenttable();
+            }
+        })
+
+    }
+
+
+
+    ///新增
+    function openAdd(){
+
+        $("#addForm").form("reset");
+        $("#StudentDialog").dialog({
+            closed:false,
+            title:"新增用户"
+        })
+
+    }
+
+    function close(){
+        $("#StudentDialog").dialog("close");
+    }
+
+    function Add(){
+        $("#addForm").form("submit",{
+            url:"../addstudent",
+            success:function(){
+
+                close();
+
+                initstudenttable();
+            }
+        })
+    }
+
+
+    function updatebyid(id){
+        $.ajax({
+            url:"../updatebyid",
+            type:"post",
+            data:{id:id},
+            success:function(data){
+                $("#addForm").form("load",data);
+                //打开弹框
+                $("#StudentDialog").dialog({
+                    closed:false,
+                    title:'修改用户'
+                });
+            }
+        })
+
+    }
+</script>
+</html>

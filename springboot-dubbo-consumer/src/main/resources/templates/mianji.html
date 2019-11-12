@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 这是jquery的核心包  -->
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../highcharts/code/highcharts.js"></script>
+    <script src="../highcharts/code/modules/exporting.js"></script>
+    <script src="../highcharts/code/modules/export-data.js"></script>
+
+</head>
+<body>
+<div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div><br>
+</body>
+<script>
+    $(function(){
+        $.ajax({
+            url:"../querymianji",
+            type:"post",
+            dataType:"json",
+            async:true,
+            success:function (data) {
+                var xtext = [];//X轴TEXT
+                var nums = [];//y轴数量
+                for (var i = 0; i < data.length; i++) {
+
+                    nums.push(data[i].counts);
+                    xtext.push(data[i].cname);
+                }
+                alert(xtext);
+
+                var chart = Highcharts.chart('container', {
+                    chart: {
+                        type: 'areaspline'
+                    },
+                    title: {
+                        text: '每个品牌的销量'
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'left',
+                        verticalAlign: 'top',
+                        x: 150,
+                        y: 100,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                    },
+                    xAxis: {
+                        categories: xtext,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        title: {
+                            text: '销量'
+                        }
+                    },
+                    tooltip: {
+                        shared: true,
+                        valueSuffix: ' 单位'
+                    },
+                    plotOptions: {
+                        areaspline: {
+                            fillOpacity: 0.5
+                        }
+                    },
+                    series: [{
+                        name: '品牌',
+
+                        data: nums,
+                    }]
+
+                })
+            }
+    })
+    })
+</script>
+</html>

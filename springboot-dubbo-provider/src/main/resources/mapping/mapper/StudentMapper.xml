@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.StudentMapper" >
+
+  <insert id="addStudent" parameterType="java.util.List">
+      insert into t_student (studentName,sex)
+      VALUES
+      <foreach collection="list" item="s" separator=",">
+          (#{s.studentName},#{s.sex})
+      </foreach>
+  </insert>
+
+<!--查询饼状图-->
+  <select id="queryStudent" resultType="java.util.LinkedHashMap">
+    select count(1) y,sex 性别 from t_student group by sex
+  </select>
+
+  <!--查询面积图-->
+  <select id="querymianji" resultType="java.util.LinkedHashMap">
+    select sum(counts) counts ,cname  from t_car GROUP BY cname
+  </select>
+
+  <!--查询柱状图-->
+  <select id="queryzhuzhuang" resultType="java.util.LinkedHashMap">
+SELECT DATE_FORMAT(cartime,'%m-%d') as time,sum(counts)  counts FROM t_car   GROUP BY  time
+  </select>
+
+ <!-- 饼状-->
+  <select id="queryCar" resultType="java.util.LinkedHashMap">
+SELECT
+sum(counts) as y,
+	DATE_FORMAT(cartime, '%Y-%m') as name
+FROM
+	t_car
+where DATE_FORMAT(cartime, '%Y')=2019
+GROUP BY
+	DATE_FORMAT(cartime, '%Y-%m')
+  </select>
+
+
+<!--  折线-->
+  <select id="queryCarAll" resultType="java.util.LinkedHashMap">
+  SELECT DATE_FORMAT(cartime,'%Y-%u') as time,sum(counts)  counts FROM t_car   GROUP BY  time
+  </select>
+
+
+  <select id="querycoynt" resultType="int">
+    SELECT  count(1) FROM t_student;
+  </select>
+
+  <select id="queryStudentsList" resultType="com.jk.model.Student">
+    SELECT  * FROM t_student;
+  </select>
+
+  <select id="queryStudentList" resultType="com.jk.model.Student">
+    SELECT  * FROM t_student limit #{start},#{end};
+  </select>
+
+
+  <delete id="del">
+    delete from t_student where sid=#{id}
+  </delete>
+
+  <insert id="addstudent" parameterType="com.jk.model.Student">
+    insert into t_student (studentName,sex) values (#{studentName},#{sex})
+  </insert>
+
+  <select id="updatebyid" resultType="com.jk.model.Student">
+    select * from t_student where sid=#{id}
+  </select>
+
+  <update id="updatestudent" parameterType="com.jk.model.Student">
+    update t_student set studentName=#{studentName},sex=#{sex} where sid=#{sid}
+  </update>
+
+    <select id="queryStudentsLists" resultType="com.jk.model.Student">
+        select * from t_student where sid=#{id}
+    </select>
+</mapper>

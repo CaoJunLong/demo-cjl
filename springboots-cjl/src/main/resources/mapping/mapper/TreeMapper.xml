@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.TreeMapper">
+
+
+    <select id="findOrg" resultType="com.jk.model.Tree">
+        SELECT * FROM t_tree where pid=#{pid};
+    </select>
+
+
+    <select id="queryUserMenuTree" resultType="com.jk.model.Tree">
+        SELECT DISTINCT m.*
+
+        from t_center ur , t_role_menu rm , t_tree m
+
+        where
+        ur.roleid = rm.roleid
+        and rm.menuid = m.id
+        and ur.userid = #{userId}
+        and m.pid = #{pid}
+
+    </select>
+</mapper>

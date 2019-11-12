@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.UserMapper">
+
+    <!-- 用户附角色 -->
+    <select id="queryroleList" resultType="com.jk.model.Role">
+        select * from t_role
+    </select>
+
+    <select id="queryrole" resultType="java.lang.Integer">
+        select c.roleid from t_center c where c.userId = #{uid}
+    </select>
+
+
+    <!-- 查询权限 表-->
+    <select id="querytree" resultType="com.jk.model.Tree" parameterType="int">
+        select * from t_tree where pid=#{pid}
+    </select>
+    <!-- 查询角色的权限-->
+    <select id="queryTreeByid" resultType="java.lang.Integer">
+        select rm.menuid
+        from t_role_menu rm
+        where rm.roleid = #{roleId}
+    </select>
+
+
+    <!-- 删除用户角色 -->
+    <delete id="deletecenterbyid">
+        delete from t_center where userId=#{uid}
+    </delete>
+    <!-- 添加用户角色 -->
+    <insert id="saveUserRole">
+        insert into t_center (userId,roleId) values
+        <foreach item="a" index="index" collection="ridArr" separator=",">
+            (#{uid},${a})
+        </foreach>
+    </insert>
+
+    <!-- 删除角色权限 -->
+    <delete id="deleterolemenu">
+        delete from t_role_menu where roleid=#{roleId}
+    </delete>
+    <!-- 添加角色权限 -->
+    <insert id="addRoleMenu">
+        insert into t_role_menu (roleid,menuid) values
+        <foreach item="mid" index="index" collection="tids" separator=",">
+            (#{roleId},${mid})
+        </foreach>
+
+    </insert>
+
+    <select id="queryusername" resultType="com.jk.model.User">
+        SELECT * FROM t_user where userName=#{userName}
+    </select>
+
+    <!-- 查询角色 -->
+    <select id="queryUserList" resultType="com.jk.model.User">
+        SELECT * FROM t_user
+    </select>
+
+    <delete id="del" parameterType="java.lang.Integer">
+        delete from t_user where userId=#{id}
+    </delete>
+
+    <insert id="adduser" parameterType="com.jk.model.User">
+        insert into t_user (userName,passWord) values (#{userName},#{passWord})
+    </insert>
+
+    <select id="updatebyid" resultType="com.jk.model.User">
+        select * from t_user where userId=#{id}
+    </select>
+
+    <update id="updateuser" parameterType="com.jk.model.User">
+        update t_user set userName=#{userName},passWord=#{passWord} where userId=#{userId}
+    </update>
+
+    <select id="queryRoleList" resultType="com.jk.model.Role">
+        SELECT * FROM t_role
+    </select>
+
+    <delete id="delrole" parameterType="java.lang.Integer">
+        delete from t_role where roleId=#{id}
+    </delete>
+
+    <insert id="addrole" parameterType="com.jk.model.Role">
+        insert into t_role (roleName) values (#{roleName})
+    </insert>
+
+    <update id="updaterole" parameterType="com.jk.model.Role">
+        update t_role set roleName=#{roleName} where roleId=#{roleId}
+    </update>
+
+
+    <select id="updaterolebyid" resultType="com.jk.model.Role">
+        select * from t_role where roleId=#{id}
+    </select>
+
+
+    <select id="queryMenuList" resultType="com.jk.model.Tree">
+        select * from t_tree
+    </select>
+
+    <delete id="delmenu" parameterType="java.lang.Integer">
+        delete from t_tree where id=#{id}
+    </delete>
+
+    <insert id="addmenu" parameterType="com.jk.model.Tree">
+        insert into t_tree (text,url,pid)
+        values(#{text},#{url},#{pid})
+    </insert>
+
+    <select id="updatemenubyid" resultType="com.jk.model.Tree">
+        select * from t_tree where id=#{id}
+    </select>
+
+    <update id="updatetree" parameterType="com.jk.model.Tree">
+        update t_tree set text=#{text},url=#{url},pid=#{pid}
+        where id=#{id}
+    </update>
+
+    <select id="findOrg" resultType="com.jk.model.Tree">
+        select * from t_tree where pid=#{pid}
+    </select>
+</mapper>

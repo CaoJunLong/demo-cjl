@@ -120,6 +120,7 @@ public class UserController {
     @RequestMapping("toEditUserRole")
     public String toEditUserRole(Integer uid, Model model) {
         System.out.println(111);
+        System.out.println(222);
 
         List<Role> rolelist = userService.queryuserrole(uid);
         model.addAttribute("rolelist", rolelist);

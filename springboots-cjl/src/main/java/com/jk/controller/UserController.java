@@ -119,6 +119,8 @@ public class UserController {
     //用户附角色
     @RequestMapping("toEditUserRole")
     public String toEditUserRole(Integer uid, Model model) {
+        System.out.println(111);
+
         List<Role> rolelist = userService.queryuserrole(uid);
         model.addAttribute("rolelist", rolelist);
         return "userrole";
